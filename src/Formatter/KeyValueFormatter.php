@@ -1,7 +1,8 @@
 <?php
 
-namespace Datalog\Tools;
+namespace Datalog\Formatter;
 
+use Datalog\Tools\ArrayFlattener;
 use Monolog\Formatter\JsonFormatter;
 
 class KeyValueFormatter extends JsonFormatter
