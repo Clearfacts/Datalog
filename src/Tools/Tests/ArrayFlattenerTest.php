@@ -2,10 +2,9 @@
 
 namespace Tools\Tests;
 
-use Common\Tests\TestCase;
-use Tools\ArrayFlattener;
+use Datalog\Tools\ArrayFlattener;
 
-class ArrayFlattenerTest extends TestCase
+class ArrayFlattenerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test
@@ -44,7 +43,7 @@ class ArrayFlattenerTest extends TestCase
             ],
         ];
 
-        $expected = 'foo=bar nested1.foo=bar nested1.nested2.foo=bar nested1.nested2.baz=bazz';
+        $expected = 'foo="bar" nested1.foo="bar" nested1.nested2.foo="bar" nested1.nested2.baz="bazz"';
 
         $this->assertEquals($expected, ArrayFlattener::getFlatKeyValueString($input));
     }

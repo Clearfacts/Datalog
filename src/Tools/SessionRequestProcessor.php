@@ -1,6 +1,6 @@
 <?php
 
-namespace Tools;
+namespace Datalog\Tools;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 
