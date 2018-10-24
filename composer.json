@@ -1,0 +1,15 @@
+{
+    "name": "clearfacts/datalog",
+    "description": "Tools for sending logs to Datadog",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "GijsPaulussen",
+            "email": "gijs@tactics.be"
+        }
+    ],
+    "require": {
+        "monolog/monolog": "^1.0"
+    }
+}
