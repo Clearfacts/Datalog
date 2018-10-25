@@ -10,7 +10,7 @@ use Monolog\Logger;
 
 class MainHandler extends FingersCrossedHandler
 {
-    public function __construct(array $app, $stream, $activationStrategy = Logger::ERROR, int $bufferSize = 0, bool $bubble = true, bool $stopBuffering = true, int $passthruLevel = null)
+    public function __construct(\ArrayAccess $app, $stream, $activationStrategy = Logger::ERROR, int $bufferSize = 0, bool $bubble = true, bool $stopBuffering = true, int $passthruLevel = null)
     {
         $basicHandler = new StreamHandler($stream, \Monolog\Logger::DEBUG);
         $basicHandler->setFormatter(new KeyValueFormatter());
@@ -21,5 +21,4 @@ class MainHandler extends FingersCrossedHandler
         //Wrap the stream in fingers crossed
         parent::__construct($basicHandler, $activationStrategy, $bufferSize, $bubble, $stopBuffering, $passthruLevel);
     }
-
 }
