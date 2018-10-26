@@ -1,4 +1,5 @@
 services:
     key_value_formatter:
       class: Datalog\Formatter\KeyValueFormatter
+      public: true
       lazy: true
