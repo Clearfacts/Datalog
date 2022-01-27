@@ -8,6 +8,7 @@ list:
 
 init: ## Setup this project.
 	@make composer
+	@make setup
 
 # Composer commands
 composer: ## Do a composer install for the php project.
@@ -17,3 +18,18 @@ composer: ## Do a composer install for the php project.
 args?=
 test: ## Run all tests with an optional parameter `args` to run a specific suite or test-file, or pass some other testing arguments.
 	@vendor/bin/phpunit $(args)
+
+# Linting and testing
+setup: ## Setup git-hooks
+	@composer run set-up
+
+copy-phpcs-config: ## Setup phpcs config
+	@composer run copy-phpcs-config
+
+options?=
+files?=src/
+phpcs: ## Check phpcs.
+	@vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+
+phpcs-fix: ## Check phpcs and try to automatically fix issues.
+	@vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
