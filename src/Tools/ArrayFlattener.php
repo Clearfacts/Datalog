@@ -28,7 +28,7 @@ class ArrayFlattener
         return trim($result);
     }
 
-    private static function getPrefix($prefix)
+    private static function getPrefix($prefix): string
     {
         return $prefix ? $prefix . '.' : '';
     }

@@ -13,13 +13,13 @@
         { "type": "vcs", "url": "https://github.com/Clearfacts/cf-codestyle" }
     ],
     "require": {
-        "php" : "^7 || ^8",
+        "php" : "^8.1",
         "ext-json" : "*",
-        "monolog/monolog": "^1 || ^2 || ^3",
+        "monolog/monolog": "^3",
         "symfony/http-foundation": "^3 || ^4 || ^5 || ^6"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.",
+        "phpunit/phpunit": "^9",
         "clearfacts/cf-codestyle": "^1.0"
     },
     "scripts": {
@@ -32,6 +32,11 @@
     "autoload": {
         "psr-4": {
             "Datalog\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\" : "tests/"
         }
     }
 }
