@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL := list
 
-docker=docker run -it --volume $$PWD:/var/www/html --user 1000:1000 -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.7
+docker=docker run -it --volume $$PWD:/var/www/html --volume composer:/root/.composer -e COMPOSER_AUTH="$$COMPOSER_AUTH" -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.7
 
 .PHONY: list
 list:
@@ -12,11 +12,14 @@ init: ## Setup this project.
 	@make composer
 	@make setup
 
+bash: ## ssh into the php container.
+	@$(docker) bash
+
 # Composer commands
 composer: ## Do a composer install.
 	@$(docker) composer.phar install
 composer-update: ## Do a composer update.
-	@$(docker) composer.phar install
+	@$(docker) composer.phar update
 
 # Linting and testing	
 args?=
@@ -37,3 +40,6 @@ phpcs: ## Check phpcs.
 
 phpcs-fix: ## Check phpcs and try to automatically fix issues.
 	@$(docker) vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff --using-cache=no --allow-risky=yes --ansi $(options) $(files)
+
+psalm: ## Check phpcs and try to automatically fix issues.
+	@$(docker) vendor/bin/psalm

@@ -4,6 +4,7 @@ namespace Datalog\Handler;
 
 use Datalog\Formatter\KeyValueFormatter;
 use Datalog\Processor\SessionRequestProcessor;
+use Monolog\Handler\FingersCrossed\ActivationStrategyInterface;
 use Monolog\Handler\FingersCrossedHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
@@ -14,11 +15,11 @@ class MainHandler extends FingersCrossedHandler
     public function __construct(
         \ArrayAccess $app,
         $stream,
-        Level $activationStrategy = Level::Error,
+        int|string|Level|ActivationStrategyInterface $activationStrategy = Level::Error,
         int $bufferSize = 0,
         bool $bubble = true,
         bool $stopBuffering = true,
-        int $passthruLevel = null
+        int|string|Level|null $passthruLevel = null
     ) {
         $basicHandler = new StreamHandler($stream, Level::Debug);
         $basicHandler->setFormatter(new KeyValueFormatter());
