@@ -4,6 +4,9 @@ namespace Datalog\Tools;
 
 class ArrayFlattener
 {
+    /**
+     * @return mixed[]
+     */
     public static function getFlat(array $notFlat, &$result = [], $prefix = ''): array
     {
         foreach ($notFlat as $key => $mystery) {
@@ -21,7 +24,7 @@ class ArrayFlattener
     {
         $result = '';
         foreach (self::getFlat($notFlat) as $key => $value) {
-            $strippedValue = '"' . str_replace('"', '', $value) . '"';
+            $strippedValue = '"' . str_replace('"', '', (string) $value) . '"';
             $result .= "{$key}={$strippedValue} ";
         }
 

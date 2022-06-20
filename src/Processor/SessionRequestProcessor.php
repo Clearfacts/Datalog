@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionRequestProcessor
 {
-    private string|int|null $sessionId;
+    private string|int|null $sessionId = null;
     private ?string $requestId = null;
     private array $additionalContext = [];
 
@@ -14,6 +14,9 @@ class SessionRequestProcessor
         private readonly SessionInterface $session,
     ) {}
 
+    /**
+     * @return mixed[]
+     */
     public function processRecord(array $record): array
     {
         if (null === $this->requestId) {
