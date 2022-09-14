@@ -17,7 +17,7 @@ class ConsoleProcessor implements EventSubscriberInterface
     {
         $this->closure = $closure;
     }
-  
+
     public function __invoke(array $record)
     {
         $extra = [];

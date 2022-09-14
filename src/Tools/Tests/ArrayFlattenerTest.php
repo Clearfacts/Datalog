@@ -6,10 +6,7 @@ use Datalog\Tools\ArrayFlattener;
 
 class ArrayFlattenerTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @test
-     */
-    public function is_flattens()
+    public function testFlattens()
     {
         $input = [
             'foo' => 'bar',
@@ -27,10 +24,7 @@ class ArrayFlattenerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, ArrayFlattener::getFlat($input));
     }
 
-    /**
-     * @test
-     */
-    public function can_return_flattened_key_value_string()
+    public function testReturnsFlattenedKeyKalueString()
     {
         $input = [
             'foo' => 'bar',

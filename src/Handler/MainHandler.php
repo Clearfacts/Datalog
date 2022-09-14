@@ -18,7 +18,7 @@ class MainHandler extends FingersCrossedHandler
         $sessionProcessor = new SessionRequestProcessor($app['session']);
         $basicHandler->pushProcessor([$sessionProcessor, 'processRecord']);
 
-        //Wrap the stream in fingers crossed
+        // Wrap the stream in fingers crossed
         parent::__construct($basicHandler, $activationStrategy, $bufferSize, $bubble, $stopBuffering, $passthruLevel);
     }
 }
