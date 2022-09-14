@@ -6,7 +6,7 @@ use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ConsoleProcessor implements EventSubscriberInterface
+class CommandProcessor implements EventSubscriberInterface
 {
     protected $command;
     protected $input;
