@@ -15,3 +15,16 @@ For more information see [cf-docs](https://github.com/Clearfacts/cf-docs/blob/66
 - Clone the project from github
 - `cd <folder-name>`
 - `make init`
+- register the processor 
+
+```
+Datalog\Processor\SessionRequestProcessor:
+
+        arguments:
+
+            - '@session'
+
+        tags:
+
+            - { name: monolog.processor, method: processRecord }
+```
