@@ -24,6 +24,9 @@
         "phpunit/phpunit": "^7.",
         "clearfacts/cf-codestyle": "^1.0"
     },
+    "suggest": {
+        "symfony/security": "If you want to log user-id's"
+    },
     "scripts": {
         "set-up": [
             "@copy-phpcs-config",
@@ -34,6 +37,11 @@
     "autoload": {
         "psr-4": {
             "Datalog\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\DataLog\\" : "tests/"
         }
     }
 }
