@@ -1,6 +1,6 @@
 <?php
 
-namespace Tools\Tests;
+namespace Tests\Datalog\Tools;
 
 use Datalog\Tools\ArrayFlattener;
 
