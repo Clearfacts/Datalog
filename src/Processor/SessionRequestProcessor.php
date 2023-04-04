@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace Datalog\Processor;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SessionRequestProcessor
 {
-    private $session;
+    private SessionInterface $session;
     private $sessionId;
     private $requestId;
     private $_server;
     private $_get;
     private $_post;
 
-    public function __construct(Session $session)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }
 
-    public function processRecord(array $record)
+    public function processRecord(array $record): array
     {
         if (null === $this->requestId) {
             $this->requestId = substr(uniqid(), -8);
 
-            if ('cli' === php_sapi_name()) {
+            if ('cli' === PHP_SAPI) {
                 $this->sessionId = getmypid();
             } else {
                 try {
@@ -51,7 +51,7 @@ class SessionRequestProcessor
         $record['request_id'] = $this->requestId;
         $record['session_id'] = $this->sessionId;
 
-        if (!'cli' === php_sapi_name()) {
+        if ('cli' !== PHP_SAPI) {
             $record['http.url'] = $this->_server['http.url'];
             $record['http.method'] = $this->_server['http.method'];
             $record['http.useragent'] = $this->_server['http.useragent'];
@@ -62,19 +62,16 @@ class SessionRequestProcessor
         return $record;
     }
 
-    protected function clean($array)
+    protected function clean($array): array
     {
-        $toReturn = [];
-        foreach (array_keys($array) as $key) {
-            if (false !== strpos($key, 'password')) {
-                // Do not add
-            } elseif (false !== strpos($key, 'csrf_token')) {
-                // Do not add
-            } else {
-                $toReturn[$key] = $array[$key];
-            }
-        }
-
-        return $toReturn;
+        return array_filter(
+            $array,
+            static fn ($key) =>
+                !(is_string($key)
+                && (
+                    false !== strpos($key, 'password') || false !== strpos($key, 'csrf_token')
+                )),
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 }
