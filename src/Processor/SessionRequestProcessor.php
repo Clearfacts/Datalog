@@ -28,13 +28,6 @@ class SessionRequestProcessor
             if ('cli' === PHP_SAPI) {
                 $this->sessionId = getmypid();
             } else {
-                try {
-                    $this->session->start();
-                    $this->sessionId = $this->session->getId();
-                } catch (\RuntimeException $e) {
-                    $this->sessionId = '????????';
-                }
-
                 $this->_server = [
                     'http.url' => (@$_SERVER['HTTP_HOST']) . '/' . (@$_SERVER['REQUEST_URI']),
                     'http.method' => @$_SERVER['REQUEST_METHOD'],
@@ -45,6 +38,13 @@ class SessionRequestProcessor
 
                 $this->_post = $this->clean($_POST);
                 $this->_get = $this->clean($_GET);
+
+                try {
+                    $this->session->start();
+                    $this->sessionId = $this->session->getId();
+                } catch (\RuntimeException $e) {
+                    $this->sessionId = '????????';
+                }
             }
         }
 
