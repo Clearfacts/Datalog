@@ -11,7 +11,7 @@ For more information see [cf-docs](https://github.com/Clearfacts/cf-docs/blob/66
 
 ### Installation
 
-- Make sure you have composer installed globally and have php 7.3 or 7.4
+- Make sure you have composer installed globally and have php 7.4 or higher
 - Clone the project from github
 - `cd <folder-name>`
 - `make init`
@@ -19,12 +19,8 @@ For more information see [cf-docs](https://github.com/Clearfacts/cf-docs/blob/66
 
 ```
 Datalog\Processor\SessionRequestProcessor:
-
-        arguments:
-
-            - '@session'
-
-        tags:
-
-            - { name: monolog.processor, method: processRecord }
+    arguments:
+        - '@session'
+    tags:
+        - { name: monolog.processor, method: processRecord }
 ```
