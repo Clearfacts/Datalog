@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class Correlation
 {
-    private RequestStack $requestStack;
+    private ?RequestStack $requestStack;
     private static ?string $correlationId = null;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(?RequestStack $requestStack = null)
     {
         $this->requestStack = $requestStack;
     }
@@ -36,6 +36,10 @@ class Correlation
 
     public function getIdFromRequestStack(): ?string
     {
+        if (!$this->requestStack) {
+            return null;
+        }
+
         $request = $this->requestStack->getMainRequest();
 
         if (!$request) {
