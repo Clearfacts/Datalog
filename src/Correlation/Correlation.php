@@ -15,7 +15,7 @@ class Correlation
         $this->requestStack = $requestStack;
     }
 
-    public function init(): void
+    private function init(): void
     {
         if (!self::$correlationId) {
             self::$correlationId = $this->getIdFromRequestStack()
@@ -24,14 +24,15 @@ class Correlation
         }
     }
 
+    public function getId(): string
+    {
+        $this->init();
+        return self::$correlationId;
+    }
+
     public static function setId(?string $correlationId): void
     {
         self::$correlationId = $correlationId;
-    }
-
-    public static function getId(): ?string
-    {
-        return self::$correlationId;
     }
 
     public function getIdFromRequestStack(): ?string
