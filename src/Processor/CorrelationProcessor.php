@@ -18,9 +18,7 @@ class CorrelationProcessor implements ProcessorInterface
 
     public function __invoke(array $record): array
     {
-        $this->correlation->init();
-
-        $record['extra']['correlation_id'] = $this->correlation::getId();
+        $record['extra']['correlation_id'] = $this->correlation->getId();
 
         return $record;
     }
