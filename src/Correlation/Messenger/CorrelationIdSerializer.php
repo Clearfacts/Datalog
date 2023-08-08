@@ -28,7 +28,7 @@ class CorrelationIdSerializer implements SerializerInterface
     public function encode(Envelope $envelope): array
     {
         $encodedEnvelope = $this->serializer->encode($envelope);
-        $encodedEnvelope['headers']['correlation_id'] = $this->correlation::getId();
+        $encodedEnvelope['headers']['correlation_id'] = $this->correlation->getId();
 
         return $encodedEnvelope;
     }
