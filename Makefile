@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL := list
 
-docker=docker run -it --volume $$PWD:/var/www/html -e COMPOSER_AUTH -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.24.1
+docker=docker run -it --volume $$PWD:/var/www/html -e COMPOSER_AUTH -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.24-dev
 
 .PHONY: list
 list:
@@ -18,15 +18,18 @@ bash: ## ssh into the php container.
 # Composer commands
 composer: ## Do a composer install.
 	@$(docker) composer.phar install
-composer-update: ## Do a composer update.
+composer-highest: ## Do a composer update with highest available versions.
 	@$(docker) composer.phar update
+composer-lowest: ## Do a composer update with lowest available versions.
+	@$(docker) composer.phar update --prefer-lowest
 
-# Linting and testing
-args?=
-test: ## Run all tests with an optional parameter `args` to run a specific suite or test-file, or pass some other testing arguments.
-	@$(docker) vendor/bin/phpunit $(args)
+test: ## Run all tests with oldest and newest possible dependencies.
+	make composer-lowest phpunit
+	make composer-highest phpunit
 
-# Linting and testing
+phpunit: ## Run phpunit
+	@$(docker) vendor/bin/phpunit
+
 setup: ## Setup git-hooks
 	@$(docker) composer.phar run set-up
 
