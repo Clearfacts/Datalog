@@ -21,7 +21,7 @@ class CorrelationProcessorTest extends TestCase
         );
     }
 
-    public function testAddsCorrelationId(): void
+    public function testAddsCorrelationIdToArray(): void
     {
         $this->correlation->expects($this->once())
             ->method('getId')
@@ -34,5 +34,18 @@ class CorrelationProcessorTest extends TestCase
                 'correlation_id' => '123',
             ],
         ], $record);
+    }
+
+    public function testAddsCorrelationIdToArrayAccess(): void
+    {
+        $this->correlation->expects($this->once())
+            ->method('getId')
+            ->willReturn('123');
+
+        $record = $this->processor->__invoke(new \ArrayObject());
+
+        $this->assertSame([
+            'correlation_id' => '123',
+        ], $record['extra']);
     }
 }
