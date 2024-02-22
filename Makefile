@@ -2,7 +2,7 @@
 
 .DEFAULT_GOAL := list
 
-docker=docker run -it --volume $$PWD:/var/www/html -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:7.4.29.1
+docker=docker run -it --volume $$PWD:/var/www/html -e COMPOSER_AUTH -e COMPOSER_MEMORY_LIMIT=-1 077201410930.dkr.ecr.eu-west-1.amazonaws.com/cf-docker-base-php:8.1.24.1
 
 .PHONY: list
 list:
