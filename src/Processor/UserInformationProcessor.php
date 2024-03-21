@@ -10,6 +10,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserInformationProcessor implements ProcessorInterface
 {
+    private TokenStorageInterface $tokenStorage;
+
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
