@@ -39,11 +39,13 @@ class SessionRequestProcessor
                 $this->_post = $this->clean($_POST);
                 $this->_get = $this->clean($_GET);
 
+                $this->sessionId = '????????';
+
                 try {
-                    $this->session->start();
-                    $this->sessionId = $this->session->getId();
-                } catch (\RuntimeException $e) {
-                    $this->sessionId = '????????';
+                    if ($this->session->isStarted()) {
+                        $this->sessionId = $this->session->getId();
+                    }
+                } catch (\RuntimeException) {
                 }
             }
         }
