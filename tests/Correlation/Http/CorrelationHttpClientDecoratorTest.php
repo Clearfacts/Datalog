@@ -16,7 +16,7 @@ class CorrelationHttpClientDecoratorTest extends TestCase
         Correlation::setId('test-id');
 
         $client = new MockHttpClient(function ($method, $url, $options) {
-            $this->assertSame(['correlation_id: test-id'], $options['normalized_headers']['correlation_id'] ?? null);
+            $this->assertSame([CorrelationHttpClientDecorator::HEADER_CORRELATION_ID . ': test-id'], $options['normalized_headers']['x-correlation-id'] ?? null);
 
             return new MockResponse();
         });

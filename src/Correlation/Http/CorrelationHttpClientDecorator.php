@@ -14,6 +14,8 @@ class CorrelationHttpClientDecorator implements HttpClientInterface
 {
     use DecoratorTrait;
 
+    public const HEADER_CORRELATION_ID = 'X-Correlation-ID';
+
     private Correlation $correlation;
 
     public function __construct(
@@ -26,8 +28,8 @@ class CorrelationHttpClientDecorator implements HttpClientInterface
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        if (!isset($options['headers']) || !array_key_exists('correlation_id', $options['headers'])) {
-            $options['headers']['correlation_id'] = $this->correlation->getId();
+        if (!isset($options['headers']) || !array_key_exists(self::HEADER_CORRELATION_ID, $options['headers'])) {
+            $options['headers'][self::HEADER_CORRELATION_ID] = $this->correlation->getId();
         }
 
         return $this->client->request($method, $url, $options);
