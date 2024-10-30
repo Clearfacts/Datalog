@@ -1,0 +1,51 @@
+name: SCA
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "release" ]
+  # trigger manually. Can be used to validate feature branches before open pull request
+  workflow_dispatch:
+jobs:
+  blackduck:
+    name: Datalog
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Run Black Duck Detec
+        uses: synopsys-sig/synopsys-action@v1.11.0
+        ### Use below configuration to set specific detect environment variables
+        env:
+          DETECT_PROJECT_NAME: ${{ github.event.repository.name }}
+        with:
+          blackduck_token: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
+          blackduck_url: 'https://test4toolsbd.cchaxcess.com'
+          # Optional parameter. By default, pushes will initiate a full "intelligent" scan and pull requests
+          # will initiate a rapid scan.
+          #blackduck_scan_full: false
+          # Required parameter if blackduck_automation_fixpr is enabled
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Optional parameter. By default, create fix pull requests if vulnerabilities are reported
+          # Passing false will disable fix pull request creation
+          blackduck_automation_fixpr: true
+          # Optional parameter. The values could be. ALL|NONE|BLOCKER|CRITICAL|MAJOR|MINOR|OK|TRIVIAL|UNSPECIFIED
+          # Single parameter
+          #blackduck_scan_failure_severities: '["ALL"]'
+          # multiple parameters
+          # blackduck_scan_failure_severities: "[\"BLOCKER\", \"CRITICAL\", \"TRIVIAL\"]"
+          # SARIF report generation and upload to GitHub Adavanced Security: Uncomment below to enable
+          # Create Black Duck SARIF report and upload it as artifact
+          #blackduck_reports_sarif_create: true
+          # Upload Black Duck SARIF report in GitHub Advanced Security tab
+          #blackduck_upload_sarif_report: true
+          # PULL REQUEST COMMENTS: Uncomment below to enable
+          #blackduck_prcomment_enabled: true
