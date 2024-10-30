@@ -3,7 +3,7 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "release" ]
+    branches: [ "main" ]
   # trigger manually. Can be used to validate feature branches before open pull request
   workflow_dispatch:
 jobs:
