@@ -17,7 +17,6 @@
         "ext-json" : "*",
         "monolog/monolog": "^2 || ^3",
         "symfony/http-foundation": "^5.3 || ^6",
-        "datadog/dd-trace": "^0.79.0",
         "symfony/event-dispatcher": "^4.4 || ^5.3 || ^6"
     },
     "require-dev": {
@@ -29,7 +28,8 @@
     "suggest": {
         "symfony/security": "If you want to log user-id's",
         "symfony/messenger": "If you want to use the message serializer for correlation id's",
-        "symfony/http-client": "If you want to use the http client decorator for correlation id's"
+        "symfony/http-client": "If you want to use the http client decorator for correlation id's",
+        "datadog/dd-trace": "If you want to use the Datadog tracing processor"
     },
     "scripts": {
         "set-up": [
