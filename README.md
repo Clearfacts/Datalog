@@ -28,4 +28,6 @@ Datalog\Processor\SessionRequestProcessor:
 ## Technical debt links
 
 [Barometer IT](https://wolterskluwer.barometerit.com/b/system/041800002496)
-[SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu//dashboard?id=clearfacts%3ADatalog)
+[SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3ADatalog)
+[Black Duck Project](https://wolterskluwer.app.blackduck.com/api/projects/750ee2f8-80a5-4d6b-9922-206979db3201)
+[Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17827)
