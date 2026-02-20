@@ -31,3 +31,6 @@ Datalog\Processor\SessionRequestProcessor:
 [SonarQube Project](https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3ADatalog)
 [Black Duck Project](https://wolterskluwer.app.blackduck.com/api/projects/750ee2f8-80a5-4d6b-9922-206979db3201)
 [Checkmarx Project](https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17827)
+
+Next line is for blackduck to ignore this repository, as it is a vendor package and thus does not have a composer.lock file with actual dependencies
+- [x] zero dependencies
