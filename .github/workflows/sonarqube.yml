@@ -16,7 +16,8 @@ jobs:
         fetch-depth: 0
     - name: Resolve environment variables
       if: github.ref == 'refs/heads/main'
-      uses: Clearfacts/cf-actions/resolve-env-vars@8c77a730bab029799bbfa04a1ad76b1914a82fb0 # main
+      shell: bash
+      run: echo "BUILD_NUMBER=v${{ github.run_number }}" >> $GITHUB_ENV
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v5.1.0 # Ex: v4.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
       env:
