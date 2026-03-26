@@ -2,19 +2,28 @@ on:
   push:
     branches:
       - main
+      - release
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches:
+      - '*'
 
 name: Sonarqube
 jobs:
   sonarqube:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.1.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - uses: actions/checkout@v4
+      with:
+        # Disabling shallow clones is recommended for improving the relevancy of reporting
+        fetch-depth: 0
+    - name: Resolve environment variables
+      if: github.ref == 'refs/heads/main'
+      uses: Clearfacts/cf-actions/resolve-env-vars@8c77a730bab029799bbfa04a1ad76b1914a82fb0 # main
+    - name: SonarQube Scan
+      uses: SonarSource/sonarqube-scan-action@v5.1.0 # Ex: v4.1.0, See the latest version at https://github.com/marketplace/actions/official-sonarqube-scan
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      with:
+        args: >
+          ${{ github.ref == 'refs/heads/main' && format('-Dsonar.projectVersion={0}', env.BUILD_NUMBER) || '' }}
