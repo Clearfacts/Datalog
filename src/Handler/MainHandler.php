@@ -15,8 +15,8 @@ class MainHandler extends FingersCrossedHandler
         $basicHandler = new StreamHandler($stream, \Monolog\Logger::DEBUG);
         $basicHandler->setFormatter(new KeyValueFormatter());
 
-        $sessionProcessor = new SessionRequestProcessor($app['session']);
-        $basicHandler->pushProcessor([$sessionProcessor, 'processRecord']);
+        $sessionProcessor = new SessionRequestProcessor($app['request_stack']);
+        $basicHandler->pushProcessor($sessionProcessor);
 
         // Wrap the stream in fingers crossed
         parent::__construct($basicHandler, $activationStrategy, $bufferSize, $bubble, $stopBuffering, $passthruLevel);

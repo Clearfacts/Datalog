@@ -2,19 +2,24 @@
 
 namespace Datalog\Processor;
 
-class DatadogTracingProcessor
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+
+class DatadogTracingProcessor implements ProcessorInterface
 {
-    public function processRecord(array $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (!extension_loaded('ddtrace')) {
             return $record;
         }
 
         $context = \DDTrace\current_context();
-        $record['dd'] = [
-            'trace_id' => $context['trace_id'],
-            'span_id' => $context['span_id'],
-        ];
+        $record->extra = array_merge($record->extra, [
+            'dd' => [
+                'trace_id' => $context['trace_id'],
+                'span_id' => $context['span_id'],
+            ],
+        ]);
 
         return $record;
     }

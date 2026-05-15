@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Datalog\Processor;
 
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CommandProcessor implements EventSubscriberInterface
+class CommandProcessor implements ProcessorInterface, EventSubscriberInterface
 {
     protected $command;
     protected $input;
@@ -20,7 +22,7 @@ class CommandProcessor implements EventSubscriberInterface
         $this->closure = $closure;
     }
 
-    public function __invoke(array $record)
+    public function __invoke(LogRecord $record): LogRecord
     {
         $extra = [];
 
@@ -42,11 +44,7 @@ class CommandProcessor implements EventSubscriberInterface
             return $record;
         }
 
-        if (isset($record['extra'])) {
-            $record['extra'] = array_merge($record['extra'], $extra);
-        } else {
-            $record['extra'] = $extra;
-        }
+        $record->extra = array_merge($record->extra, $extra);
 
         return $record;
     }

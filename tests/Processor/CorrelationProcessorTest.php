@@ -6,6 +6,8 @@ namespace Tests\Datalog\Processor;
 
 use Datalog\Correlation\Correlation;
 use Datalog\Processor\CorrelationProcessor;
+use Monolog\Level;
+use Monolog\LogRecord;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Datalog\TestCase;
 
@@ -21,31 +23,19 @@ class CorrelationProcessorTest extends TestCase
         );
     }
 
-    public function testAddsCorrelationIdToArray(): void
+    public function testAddsCorrelationIdToRecord(): void
     {
         $this->correlation->expects($this->once())
             ->method('getId')
             ->willReturn('123');
 
-        $record = $this->processor->__invoke([]);
+        $record = $this->processor->__invoke(new LogRecord(
+            datetime: new \DateTimeImmutable(),
+            channel: 'test',
+            level: Level::Info,
+            message: 'test',
+        ));
 
-        $this->assertSame([
-            'extra' => [
-                'correlation_id' => '123',
-            ],
-        ], $record);
-    }
-
-    public function testAddsCorrelationIdToArrayAccess(): void
-    {
-        $this->correlation->expects($this->once())
-            ->method('getId')
-            ->willReturn('123');
-
-        $record = $this->processor->__invoke(new \ArrayObject());
-
-        $this->assertSame([
-            'correlation_id' => '123',
-        ], $record['extra']);
+        $this->assertSame('123', $record->extra['correlation_id']);
     }
 }

@@ -4,23 +4,25 @@ declare(strict_types=1);
 
 namespace Datalog\Processor;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
-class SessionRequestProcessor
+class SessionRequestProcessor implements ProcessorInterface
 {
-    private SessionInterface $session;
+    private RequestStack $requestStack;
     private $sessionId;
     private $requestId;
     private $_server;
     private $_get;
     private $_post;
 
-    public function __construct(SessionInterface $session)
+    public function __construct(RequestStack $requestStack)
     {
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
-    public function processRecord(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
         if (null === $this->requestId) {
             $this->requestId = substr(uniqid(), -8);
@@ -42,23 +44,28 @@ class SessionRequestProcessor
                 $this->sessionId = '????????';
 
                 try {
-                    if ($this->session->isStarted()) {
-                        $this->sessionId = $this->session->getId();
+                    $session = $this->requestStack->getSession();
+                    if ($session->isStarted()) {
+                        $this->sessionId = $session->getId();
                     }
                 } catch (\RuntimeException) {
                 }
             }
         }
 
-        $record['request_id'] = $this->requestId;
-        $record['session_id'] = $this->sessionId;
+        $record->extra = array_merge($record->extra, [
+            'request_id' => $this->requestId,
+            'session_id' => $this->sessionId,
+        ]);
 
         if ('cli' !== PHP_SAPI) {
-            $record['http.url'] = $this->_server['http.url'];
-            $record['http.method'] = $this->_server['http.method'];
-            $record['http.useragent'] = $this->_server['http.useragent'];
-            $record['http.referer'] = $this->_server['http.referer'];
-            $record['http.x_forwarded_for'] = $this->_server['http.x_forwarded_for'];
+            $record->extra = array_merge($record->extra, [
+                'http.url' => $this->_server['http.url'],
+                'http.method' => $this->_server['http.method'],
+                'http.useragent' => $this->_server['http.useragent'],
+                'http.referer' => $this->_server['http.referer'],
+                'http.x_forwarded_for' => $this->_server['http.x_forwarded_for'],
+            ]);
         }
 
         return $record;

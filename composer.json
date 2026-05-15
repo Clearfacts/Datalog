@@ -15,15 +15,15 @@
     "require": {
         "php" : "^8",
         "ext-json" : "*",
-        "monolog/monolog": "^2 || ^3",
-        "symfony/http-foundation": "^5.3 || ^6",
-        "symfony/event-dispatcher": "^4.4 || ^5.3 || ^6"
+        "monolog/monolog": "^3",
+        "symfony/http-foundation": "^6 || ^7",
+        "symfony/event-dispatcher": "^6 || ^7"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.1",
         "clearfacts/cf-codestyle": "^3.1",
-        "symfony/messenger": "^5.4 || ^6",
-        "symfony/http-client": "^5.4 || ^6"
+        "symfony/messenger": "^6 || ^7",
+        "symfony/http-client": "^6 || ^7"
     },
     "suggest": {
         "symfony/security": "If you want to log user-id's",
