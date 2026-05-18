@@ -48,7 +48,7 @@ class SessionRequestProcessor implements ProcessorInterface
                     if ($session->isStarted()) {
                         $this->sessionId = $session->getId();
                     }
-                } catch (\RuntimeException) {
+                } catch (\RuntimeException|\LogicException) {
                 }
             }
         }
