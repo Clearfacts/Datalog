@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Datalog\Processor;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,11 +18,11 @@ class UserInformationProcessor implements ProcessorInterface
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
         $user = $this->tokenStorage->getToken()?->getUser();
         if ($user instanceof UserInterface && method_exists($user, 'getId')) {
-            $record['extra']['user-id'] = $user->getId();
+            $record->extra = array_merge($record->extra, ['user-id' => $user->getId()]);
         }
 
         return $record;

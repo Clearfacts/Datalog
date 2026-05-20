@@ -15,7 +15,7 @@ class ApplicationHandler extends StreamHandler
 
         $this->setFormatter(new KeyValueFormatter());
 
-        $sessionProcessor = new SessionRequestProcessor($app['session']);
-        $this->pushProcessor([$sessionProcessor, 'processRecord']);
+        $sessionProcessor = new SessionRequestProcessor($app['request_stack']);
+        $this->pushProcessor($sessionProcessor);
     }
 }

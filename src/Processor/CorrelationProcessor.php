@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Datalog\Processor;
 
 use Datalog\Correlation\Correlation;
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
 class CorrelationProcessor implements ProcessorInterface
@@ -16,9 +17,9 @@ class CorrelationProcessor implements ProcessorInterface
         $this->correlation = $correlation;
     }
 
-    public function __invoke(array|\ArrayAccess $record): array|\ArrayAccess
+    public function __invoke(LogRecord $record): LogRecord
     {
-        $record['extra']['correlation_id'] = $this->correlation->getId();
+        $record->extra = array_merge($record->extra, ['correlation_id' => $this->correlation->getId()]);
 
         return $record;
     }
