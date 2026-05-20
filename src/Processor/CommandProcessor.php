@@ -17,7 +17,7 @@ class CommandProcessor implements ProcessorInterface, EventSubscriberInterface
     protected $output;
     protected $closure;
 
-    public function __construct(callable $closure = null)
+    public function __construct(?callable $closure = null)
     {
         $this->closure = $closure;
     }
