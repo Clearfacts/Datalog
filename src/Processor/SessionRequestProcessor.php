@@ -10,6 +10,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class SessionRequestProcessor implements ProcessorInterface
 {
+    public const KEY_REQUEST_ID = 'request_id';
+    public const KEY_SESSION_ID = 'session_id';
+    public const KEY_HTTP_URL = 'http.url';
+    public const KEY_HTTP_METHOD = 'http.method';
+    public const KEY_HTTP_USERAGENT = 'http.useragent';
+    public const KEY_HTTP_REFERER = 'http.referer';
+    public const KEY_HTTP_X_FORWARDED_FOR = 'http.x_forwarded_for';
+
     private RequestStack $requestStack;
     private $sessionId;
     private $requestId;
@@ -31,11 +39,11 @@ class SessionRequestProcessor implements ProcessorInterface
                 $this->sessionId = getmypid();
             } else {
                 $this->_server = [
-                    'http.url' => (@$_SERVER['HTTP_HOST']) . '/' . (@$_SERVER['REQUEST_URI']),
-                    'http.method' => @$_SERVER['REQUEST_METHOD'],
-                    'http.useragent' => @$_SERVER['HTTP_USER_AGENT'],
-                    'http.referer' => @$_SERVER['HTTP_REFERER'],
-                    'http.x_forwarded_for' => @$_SERVER['HTTP_X_FORWARDED_FOR'],
+                    self::KEY_HTTP_URL => (@$_SERVER['HTTP_HOST']) . '/' . (@$_SERVER['REQUEST_URI']),
+                    self::KEY_HTTP_METHOD => @$_SERVER['REQUEST_METHOD'],
+                    self::KEY_HTTP_USERAGENT => @$_SERVER['HTTP_USER_AGENT'],
+                    self::KEY_HTTP_REFERER => @$_SERVER['HTTP_REFERER'],
+                    self::KEY_HTTP_X_FORWARDED_FOR => @$_SERVER['HTTP_X_FORWARDED_FOR'],
                 ];
 
                 $this->_post = $this->clean($_POST);
@@ -54,17 +62,17 @@ class SessionRequestProcessor implements ProcessorInterface
         }
 
         $record->extra = array_merge($record->extra, [
-            'request_id' => $this->requestId,
-            'session_id' => $this->sessionId,
+            self::KEY_REQUEST_ID => $this->requestId,
+            self::KEY_SESSION_ID => $this->sessionId,
         ]);
 
         if ('cli' !== PHP_SAPI) {
             $record->extra = array_merge($record->extra, [
-                'http.url' => $this->_server['http.url'],
-                'http.method' => $this->_server['http.method'],
-                'http.useragent' => $this->_server['http.useragent'],
-                'http.referer' => $this->_server['http.referer'],
-                'http.x_forwarded_for' => $this->_server['http.x_forwarded_for'],
+                self::KEY_HTTP_URL => $this->_server[self::KEY_HTTP_URL],
+                self::KEY_HTTP_METHOD => $this->_server[self::KEY_HTTP_METHOD],
+                self::KEY_HTTP_USERAGENT => $this->_server[self::KEY_HTTP_USERAGENT],
+                self::KEY_HTTP_REFERER => $this->_server[self::KEY_HTTP_REFERER],
+                self::KEY_HTTP_X_FORWARDED_FOR => $this->_server[self::KEY_HTTP_X_FORWARDED_FOR],
             ]);
         }
 
