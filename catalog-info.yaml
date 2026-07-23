@@ -1,0 +1,23 @@
+# Wolters Kluwer Backstage compliant catalog info
+# See https://backstage.io/docs/features/software-catalog/descriptor-format
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: Datalog
+  description: "Tools for sending logs to DataDog"
+  annotations:
+    wolterskluwer.io/bit-id: "041800002496"
+spec:
+  type: service
+  lifecycle: production
+  owner: Glenn.Van-Den-Broeck@wolterskluwer.com
+links:
+  - url: https://sonarqube.cloud-dev.wolterskluwer.eu/dashboard?id=clearfacts%3ADatalog
+    type: SAST
+    title: SonarQube
+  - url: https://wolterskluwer.app.blackduck.com/api/projects/750ee2f8-80a5-4d6b-9922-206979db3201
+    type: SCA
+    title: Black Duck
+  - url: https://test4tools.cchaxcess.com/CxWebClient/ProjectStateSummary.aspx?projectid=17827
+    type: SAST
+    title: Checkmarx
