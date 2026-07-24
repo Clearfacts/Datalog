@@ -1,35 +1,96 @@
 name: Black Duck
+
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "0 23 * * 2"
+    - cron: "0 23 * * 0"
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:
+
+permissions:
+  contents: write           # required to create branches/commits for Fix PRs
+  pull-requests: write      # required to open/comment on PRs
+  security-events: write    # harmless to leave; not used since SARIF is off
+
+concurrency:
+  group: blackduck-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'full-scan' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   blackduck:
     name: ${{ github.event.repository.name }}
     runs-on: ubuntu-latest
     environment: Release
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Resolve environment variables
+        uses: FranzDiebold/github-env-vars-action@v2
+
+      - name: Set git config
+        uses: Clearfacts/cf-actions/git-config@main
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'corretto'
-      - name: Run Black Duck Detect
-        shell: bash
-        run: bash <(curl -s -L https://detect.blackduck.com/detect10.sh)
+
+      - name: Black Duck Security Scan (Fix PRs, no SARIF)
+        id: blackduck
+        continue-on-error: true
+        uses: blackduck-inc/black-duck-security-scan@v2
+
         env:
-          BLACKDUCK.URL: 'https://wolterskluwer.app.blackduck.com/'
-          BLACKDUCK.API.TOKEN: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
-          BLACKDUCK.TRUST.CERT: 'true'
-          DETECT.PROJECT.VERSION.NAME: '1.0.0'
-          DETECT.PROJECT.NAME: ${{ github.event.repository.name }}
-          DETECT.PROJECT.TAGS: '041800002496'
-          DETECT.PROJECT.GROUP.NAME: 'dxg.TAA.Clearfacts'
+          DETECT_TOOLS: 'DETECTOR'
+          DETECT_PROJECT_NAME: ${{ github.event.repository.name }}
+          DETECT_PROJECT_VERSION_NAME: '1.0.0'
+          DETECT_PROJECT_GROUP_NAME: 'dxg.TAA.Clearfacts'
+          DETECT_PROJECT_TAGS: '041800002496'
+          DETECT_INCLUDED_DETECTOR_TYPES: 'PACKAGIST'
+          DETECT_YARN_INCLUDE_OPTIONAL: 'false'
+          BLACKDUCK_TRUST_CERT: 'true'
+
+        with:
+          blackducksca_url: 'https://wolterskluwer.app.blackduck.com/'
+          blackducksca_token: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
+          blackducksca_scan_full: ${{ github.event_name != 'pull_request' }}
+          blackducksca_scan_failure_severities: 'BLOCKER,CRITICAL,MAJOR'
+          blackducksca_prcomment_enabled: true
+          blackducksca_fixpr_enabled: false
+          blackducksca_reports_sarif_create: false
+          blackducksca_upload_sarif_report: false
+          mark_build_status: 'failure'
+          # Required when PR comments or Fix PRs are enabled
+          github_token: ${{ secrets.CF_GITHUB_DEV_TOKEN }}
+
+      - name: Create JIRA issue for vulnerabilities
+        id: jira
+        # status code 8 = vulnerabilities found
+        if: ${{ github.event_name != 'pull_request' && steps.blackduck.outputs.status == '8' }}
+        continue-on-error: true
+        uses: Clearfacts/cf-actions/blackduck-jira@e459d1bb642b4244de81acb11ba74774096eed1b
+        with:
+          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          jira-team-name: Accounting
+          blackduck-project-name: ${{ github.event.repository.name }}
+          blackduck-scan-url: https://wolterskluwer.app.blackduck.com/api/projects/750ee2f8-80a5-4d6b-9922-206979db3201
+          github-run-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Microsoft Teams Notification
+        if: ${{ always() && ((steps.blackduck.outputs.status != '0' && steps.blackduck.outputs.status != '8') || steps.jira.outcome == 'failure') }}
+        uses: Clearfacts/cf-actions/create-teams-message@main
+        with:
+          url: ${{ secrets.WK_TEAMS_WEBHOOK_URL }}
+          message: Black Duck scan error for ${{ github.repository }}/${{ github.ref }}.
+
+      - name: Fail workflow
+        if: ${{ always() && (steps.blackduck.outputs.status != '0' || steps.jira.outcome == 'failure') }}
+        run: exit 1
