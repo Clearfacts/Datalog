@@ -8,6 +8,7 @@ metadata:
   description: "Tools for sending logs to DataDog"
   annotations:
     wolterskluwer.io/bit-id: '041800002496'
+    wolterskluwer.io/zero-sca-dependencies: "true"
 spec:
   type: service
   lifecycle: production
