@@ -22,14 +22,23 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-      - name: Run Black Duck Detect
-        shell: bash
-        run: bash <(curl -s -L https://detect.blackduck.com/detect10.sh)
+      - name: Black Duck Security Scan
+        uses: blackduck-inc/black-duck-security-scan@v2
         env:
-          BLACKDUCK.URL: 'https://wolterskluwer.app.blackduck.com/'
-          BLACKDUCK.API.TOKEN: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
-          BLACKDUCK.TRUST.CERT: 'true'
-          DETECT.PROJECT.VERSION.NAME: '1.0.0'
-          DETECT.PROJECT.NAME: ${{ github.event.repository.name }}
-          DETECT.PROJECT.TAGS: '041800002496'
-          DETECT.PROJECT.GROUP.NAME: 'dxg.TAA.Clearfacts'
+          BLACKDUCK_TRUST_CERT: 'true'
+          DETECT_PROJECT_VERSION_NAME: '1.0.0'
+          DETECT_PROJECT_NAME: ${{ github.event.repository.name }}
+          DETECT_PROJECT_TAGS: '041800002496'
+          DETECT_PROJECT_GROUP_NAME: 'dxg.TAA.Clearfacts'
+        with:
+          blackducksca_url: 'https://wolterskluwer.app.blackduck.com/'
+          blackducksca_token: ${{ secrets.BLACKDUCK_ACCESS_TOKEN }}
+          blackducksca_scan_full: ${{ github.event_name != 'pull_request' }}
+          blackducksca_prcomment_enabled: true
+          blackducksca_scan_failure_severities: 'BLOCKER,CRITICAL,MAJOR'
+          blackducksca_fixpr_enabled: false
+          blackducksca_reports_sarif_create: false
+          blackducksca_upload_sarif_report: false
+          mark_build_status: 'failure'
+          # Required when PR comments or Fix PRs are enabled
+          github_token: ${{ secrets.CF_GITHUB_DEV_TOKEN }}
